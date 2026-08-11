@@ -6,6 +6,12 @@ SSAFY 15기 공통 프로젝트 · Team C207 · 2026.07–2026.08
 
 `ROS 2 Humble` · `AprilTag` · `Jetson Orin Nano` · `STM32F429` · `FastAPI` · `PostgreSQL` · `WebSocket`
 
+## 동작 데모
+
+| AprilTag 경로 주행 | 카메라 AprilTag 검출 |
+| :---: | :---: |
+| ![AprilTag를 따라 주행하는 SSACURITY 로봇](docs/assets/robot-navigation-demo.gif) | ![카메라 영상에서 AprilTag를 검출하는 화면](docs/assets/apriltag-detection-demo.gif) |
+
 ## 프로젝트 소개
 
 셔틀 승강장에서는 운행 시간마다 보안 요원이 태깅 장비를 직접 설치하고 회수해야 했습니다.
