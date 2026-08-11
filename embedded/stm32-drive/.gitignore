@@ -1,0 +1,18 @@
+# STM32CubeIDE build output
+/Debug/
+/Release/
+
+# Python tooling cache
+__pycache__/
+*.py[cod]
+
+# Editor and OS files
+.DS_Store
+Thumbs.db
+*.bak
+*.tmp
+
+# Workspace metadata belongs outside the project repository
+/.metadata/
+
+./AGENTS.md

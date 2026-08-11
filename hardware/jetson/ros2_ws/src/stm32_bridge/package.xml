@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>stm32_bridge</name>
+  <version>0.1.0</version>
+  <description>
+    Jetson-STM32 UART V2 브리지. /cmd_vel 을 Ackermann 변환해 20 Hz CMD_DRIVE 로
+    송신하고, STM32 telemetry 를 ROS 토픽으로 발행한다. 링크 상태 머신으로
+    arm/rearm 과 fault 차단을 관리한다. socat + fake_stm32 로 실장비 없이 개발
+    가능하며, 프레임/CRC/파서 계층은 ROS 없이 pytest 로 직접 시험한다.
+  </description>
+  <maintainer email="eunbin-hyun@users.noreply.github.com">eunbin-hyun</maintainer>
+  <!-- 팀 공통 라이선스 정책이 정해지면 교체 (ROS 2 관례상 Apache-2.0) -->
+  <license>Apache-2.0</license>
+
+  <depend>rclpy</depend>
+  <depend>geometry_msgs</depend>
+  <depend>std_msgs</depend>
+  <depend>nav_msgs</depend>
+  <!-- TODO(robot_interfaces): 전용 msg 패키지 생성 후 의존 추가.
+       현재 telemetry 는 std_msgs/String(JSON) 으로 임시 발행한다.
+       존재하지 않는 패키지를 선언하면 rosdep install 이 실패하므로 주석 처리. -->
+  <!-- <depend>robot_interfaces</depend> -->
+
+  <test_depend>ament_copyright</test_depend>
+  <test_depend>ament_flake8</test_depend>
+  <test_depend>ament_pep257</test_depend>
+  <test_depend>python3-pytest</test_depend>
+
+  <export>
+    <build_type>ament_python</build_type>
+  </export>
+</package>

@@ -1,0 +1,30 @@
+# 빌드 컨텍스트가 리포 루트라(backend/Dockerfile 주석 참고) 여기서 걸러 준다.
+.git
+.gitignore
+**/.venv
+**/venv
+**/__pycache__
+**/*.py[cod]
+**/.pytest_cache
+**/node_modules
+**/dist
+**/build
+# 비밀이 든 파일은 빌드 컨텍스트에 아예 안 싣는다.
+# ⚠ 예전 판은 `**/.env` 하나뿐이라 `deploy/backend.env`(DB 비밀번호·API_KEY·GMS 키가 든 파일)가
+#   컨텍스트에 그대로 실렸다. 지금 Dockerfile은 `COPY backend/`만 해서 이미지에는 안 들어가지만,
+#   누가 `COPY . .` 한 줄을 적는 순간 그 비밀이 레이어에 굳는다(레이어는 지워도 남는다).
+#   컨텍스트에 애초에 안 올리는 쪽이 한 겹 위다.
+# `*.env`가 `.env`도 잡지만(도커 패턴에서 `*`는 앞의 점도 먹는다) 읽는 사람을 위해 둘 다 적는다.
+# `.env.*`는 `.env.prod` 같은 갈래를 잡는다. 비밀이 없는 `.env.example`도 같이 빠지는데,
+# 이미지 안에서 읽는 코드가 없어서(문서용 파일이다) 빠져도 아무 데도 안 걸린다.
+**/.env
+**/*.env
+**/.env.*
+# 위 `**/*.env`가 이미 잡지만, 지키려는 파일 이름을 한 줄로 박아 둔다. 패턴 해석이 도커 판마다
+# 갈리더라도 이 줄은 갈리지 않는다 — 여기 담긴 게 DB 비밀번호·API_KEY·GMS 키다.
+deploy/backend.env
+**/.idea
+**/.vscode
+docs
+frontend
+hardware

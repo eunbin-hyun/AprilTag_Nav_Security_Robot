@@ -1,0 +1,28 @@
+# 게이트 감지 (RFID + ToF) — 라즈베리파이 5
+#
+# 사전 준비 (apt, venv 밖에서 먼저 실행):
+#   sudo apt update
+#   sudo apt install swig liblgpio-dev python3-dev
+#
+# 설치:
+#   python3 -m venv .venv
+#   source .venv/bin/activate
+#   pip install -r requirements.txt
+#
+# 주의: RPi.GPIO 는 라즈베리파이 5에서 동작하지 않는다.
+#       rpi-lgpio 가 같은 RPi.GPIO 이름으로 대체하므로 함께 설치하면 충돌한다.
+#       이미 깔려 있다면: pip uninstall RPi.GPIO -y
+
+# --- ToF (VL53L1X, I2C) ---
+adafruit-blinka
+adafruit-circuitpython-vl53l1x
+
+# --- RFID (RC522, SPI) ---
+mfrc522
+spidev
+
+# --- GPIO 백엔드 (Pi 5) ---
+rpi-lgpio
+
+# --- 서버 전송 (HTTP POST 붙일 때 사용) ---
+requests

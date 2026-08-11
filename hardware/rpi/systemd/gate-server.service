@@ -1,0 +1,18 @@
+[Unit]
+Description=Raspberry Pi gate server
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=simple
+User=c207
+WorkingDirectory=/home/c207/Desktop/S15P11C207/hardware/rpi
+Environment=PYTHONUNBUFFERED=1
+ExecStart=/home/c207/Desktop/S15P11C207/hardware/rpi/.venv/bin/python /home/c207/Desktop/S15P11C207/hardware/rpi/gate_server.py
+Restart=always
+RestartSec=5
+TimeoutStopSec=10
+KillSignal=SIGINT
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>robot_description</name>
+  <version>0.0.0</version>
+  <description>
+    차량 URDF/xacro 와 TF 트리 (base_link 는 뒷차축 중심).
+    아직 비어 있음 — 축간거리·윤거·라이다 위치 실측 후 작성한다.
+  </description>
+  <maintainer email="eunbin-hyun@users.noreply.github.com">eunbin-hyun</maintainer>
+  <!-- 팀 공통 라이선스 정책이 정해지면 교체 -->
+  <license>Apache-2.0</license>
+
+  <test_depend>ament_copyright</test_depend>
+  <test_depend>ament_flake8</test_depend>
+  <test_depend>ament_pep257</test_depend>
+  <test_depend>python3-pytest</test_depend>
+
+  <export>
+    <build_type>ament_python</build_type>
+  </export>
+</package>

@@ -1,0 +1,59 @@
+# AprilTag 인식 + 카메라 미리보기 상시 실행 (tag_perception.launch.py).
+#
+# 웹에서 주행 명령을 내려야 카메라 화면이 열리던 구조를 바꾸기 위한 것이다.
+# 이 서비스가 떠 있으면 주행 launch 를 몇 번이든 재시작해도 :8090 이 유지된다.
+#
+# 설치 (한 번만):
+#   sudo cp tag-perception.service /etc/systemd/system/
+#   sudo systemctl daemon-reload
+#   sudo systemctl enable --now tag-perception
+# 확인:
+#   systemctl status tag-perception
+#   journalctl -u tag-perception -f
+#   curl -I http://localhost:8090
+#   ss -ltnp | grep 8090
+#
+# ⚠ **Discovery Server 를 쓰지 않는다.** 이 저장소는 기본 멀티캐스트 DDS 로
+#   합의했고, `.bashrc` 의 ROS_DISCOVERY_SERVER 는 주석 처리되어 있으며
+#   fastdds-discovery.service 도 설치되어 있지 않다. 여기에만
+#   ROS_DISCOVERY_SERVER 를 넣으면 **이 노드와 대화형 터미널의 route_runner 가
+#   서로를 못 본다** — `/tag/target` 이 도착하지 않아 모든 drive 단계가
+#   "태그를 한 번도 못 봤다" FAULT_OVERRUN 이 된다. 진단이 매우 어렵다.
+#   나중에 Discovery Server 로 전환하면 `.bashrc`(Jetson·PC)·super_client.xml·
+#   이 파일을 **동시에** 고치고 After=/Wants= 에 fastdds-discovery.service 를
+#   추가할 것.
+#
+# ⚠ 카메라는 한 프로세스만 열 수 있다. 이 서비스가 떠 있는 동안
+#   tag_localizer_cv 를 손으로 실행하거나 scripts/tag_drive.py 를 돌리면
+#   /dev/video0 점유 충돌이 난다. 먼저 `sudo systemctl stop tag-perception`.
+#
+# 장치 경로는 `/dev/video0` 이 아니라 **by-id 고정 경로**를 쓴다. Brio 100 은
+# video0/video1 두 노드를 만들고 재부팅 시 번호가 바뀔 수 있다. index0 이
+# 영상 스트림이다.
+#
+# 권한: c207 은 video 그룹(gid 44) 소속이고 /dev/video* 에 group rw 가 있어서
+# 로그인 세션 ACL 없이도 열린다. 사용자를 바꾸면 video 그룹에 넣을 것.
+
+[Unit]
+Description=ROS 2 AprilTag perception and camera preview (:8090)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=c207
+# ros_ws 는 S15P11C207/hardware/jetson/ros2_ws 로 가는 심볼릭 링크다.
+WorkingDirectory=/home/c207/ros_ws
+Environment=ROS_DOMAIN_ID=0
+# `bash -lc` 가 아니라 `bash -c` 다 — 로그인 셸을 태우면 .profile 이 끼어들어
+# 환경이 대화형 터미널에 따라 달라진다. 필요한 것만 명시적으로 source 한다.
+ExecStart=/bin/bash -c 'source /opt/ros/humble/setup.bash && \
+  source /home/c207/ros_ws/install/setup.bash && \
+  exec ros2 launch robot_bringup tag_perception.launch.py \
+    cam_device:=/dev/v4l/by-id/usb-046d_Brio_100_2515ZBE1XJY8-video-index0'
+Restart=always
+RestartSec=3
+TimeoutStopSec=10
+
+[Install]
+WantedBy=multi-user.target

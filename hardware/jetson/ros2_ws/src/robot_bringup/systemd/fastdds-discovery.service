@@ -1,0 +1,32 @@
+# Fast DDS Discovery Server — 부팅 시 자동 시작, 죽으면 자동 재시작.
+#
+# 이 서버가 죽으면 모든 노드(PC RViz 포함)가 서로를 잃는다. 개발 중 두 번의
+# "전부 안 보임" 사고가 전부 이 서버가 조용히 죽어 있던 것이 원인이었다.
+#
+# 설치 (한 번만):
+#   sudo cp fastdds-discovery.service /etc/systemd/system/
+#   sudo systemctl daemon-reload
+#   sudo systemctl enable --now fastdds-discovery
+# 확인:
+#   systemctl status fastdds-discovery
+#   ss -lun | grep 11811
+#
+# ⚠ IP 가 하드코딩이다 (192.168.100.252). Jetson 이 DHCP 라 바뀔 수 있으므로
+#   공유기에서 MAC 고정 할당을 걸어 둘 것. IP 가 바뀌면 이 파일과
+#   .bashrc(Jetson·PC)·super_client.xml 을 전부 고쳐야 한다.
+
+[Unit]
+Description=Fast DDS Discovery Server (ROS 2)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=c207
+Environment=LD_LIBRARY_PATH=/opt/ros/humble/lib
+ExecStart=/opt/ros/humble/bin/fast-discovery-server -i 0 -l 192.168.100.252 -p 11811
+Restart=always
+RestartSec=2
+
+[Install]
+WantedBy=multi-user.target

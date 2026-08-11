@@ -1,0 +1,28 @@
+# stm32_bridge 차량 파라미터
+#
+# ⚠ 값의 신뢰 등급이 섞여 있다. 실측 확정값과 개발용 placeholder 를 구분할 것.
+stm32_bridge:
+  ros__parameters:
+    # serial_port 는 여기 두지 않는다 — 개발(socat)과 실차(CP2102)가 달라
+    # launch 인자 stm32_port 로 받는다. udev 규칙 적용 후 기본값을
+    # /dev/stm32 로 올릴 예정.
+    baud_rate: 115200
+
+    # ── 실측 확정 ────────────────────────────────────────
+    # 2026-07-30 줄자 실측 (조향 정중앙, 하부 조립 상태 — 상부와 무관한 값).
+    # STM32 오도메트리 적분과 동일 값 사용이 합의 조건 (오도메트리 합의 #7).
+    wheelbase_m: 0.1355
+
+    # ── 개발용 placeholder — 실차 주행 금지 ──────────────
+    # STM32 측 실측 대기: max_speed 는 duty 포화 시험(측정절차 §7),
+    # max_steering 은 조향 한계 시험(§5.5) 후 확정한다.
+    # 미설정(0)이면 노드가 기동을 거부하므로 개발용으로만 넣어 둔 값.
+    max_speed_mm_s: 1000
+    max_steering_cdeg: 3000
+
+    # ── 규격값 (명세 합의, 임의 변경 금지) ────────────────
+    command_rate_hz: 20.0        # 명세 §10
+    ros_command_timeout_ms: 200  # 명세 §10 Jetson watchdog
+    uart_rx_timeout_ms: 300      # 명세 §10.4
+    rearm_quiet_ms: 350          # 명세 §13.1-5
+    arming_timeout_ms: 1000

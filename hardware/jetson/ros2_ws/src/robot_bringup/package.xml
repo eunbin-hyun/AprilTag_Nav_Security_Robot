@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>robot_bringup</name>
+  <version>0.0.0</version>
+  <description>
+    Jetson 필수 노드 통합 기동: 라이다(X4-Pro) + stm32_bridge + 차량 파라미터.
+    Discovery Server 는 launch 가 아니라 systemd 로 관리한다 (systemd/ 참고).
+  </description>
+  <maintainer email="eunbin-hyun@users.noreply.github.com">eunbin-hyun</maintainer>
+  <!-- 팀 공통 라이선스 정책이 정해지면 교체 -->
+  <license>Apache-2.0</license>
+
+  <exec_depend>stm32_bridge</exec_depend>
+  <!-- ydlidar_ros2_driver 는 별도 워크스페이스(서드파티)라 선언하지 않는다.
+       선언하면 rosdep install 이 실패한다. source 순서는 README 참고. -->
+
+  <test_depend>ament_copyright</test_depend>
+  <test_depend>ament_flake8</test_depend>
+  <test_depend>ament_pep257</test_depend>
+  <test_depend>python3-pytest</test_depend>
+
+  <export>
+    <build_type>ament_python</build_type>
+  </export>
+</package>

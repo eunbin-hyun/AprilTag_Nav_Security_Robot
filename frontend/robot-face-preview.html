@@ -1,0 +1,167 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>SSACURITY 로봇 표정 미리보기</title>
+<style>
+:root { --panel:#151b20; --panel2:#1b232a; --line:#28323a; --line2:#1e262c; --ink:#dde4ea; --ink2:#9fadb8; --ink3:#7f8f9d;
+  --accent:#4fa6be; --ok:#46a774; --crit:#f65b4e; --disp:"Bahnschrift","Segoe UI Semibold",system-ui,sans-serif;
+  --sans:"Pretendard Variable",Pretendard,"Malgun Gothic",system-ui,sans-serif; }
+body { margin:0; background:#0e1317; color:var(--ink); font-family:var(--sans); padding:26px 20px 40px; }
+h1 { font-family:var(--disp); font-size:24px; margin:0 0 6px; }
+p.lead { color:var(--ink2); font-size:14px; margin:0 0 22px; line-height:1.7; }
+.grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:16px; max-width:1180px; }
+.cell { background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:16px 12px 14px; text-align:center; }
+.stage { position:relative; height:150px; display:flex; align-items:center; justify-content:center; }
+.rbot { position:relative; width:120px; height:120px; }
+.rbotsvg { display:block; width:100%; height:100%; }
+.rbot { filter: drop-shadow(0 0 7px var(--rglow)) drop-shadow(0 0 16px var(--rglow2)); }
+.rbot[data-run="1"] { --rglow:rgba(246,91,78,.85); --rglow2:rgba(246,91,78,.45); }
+.rbot[data-run="0"] { --rglow:rgba(70,167,116,.8); --rglow2:rgba(70,167,116,.4); }
+.rbot[data-dir="back"] .rbotsvg { transform:scaleX(-1); }
+.rbot[data-mood="angry"] { --rface:#f65b4e; }
+.rbot[data-mood="confused"] { --rface:#e8b53a; }
+.rbot[data-mood="happy"] { --rface:#8fe6d6; }
+.rbot[data-mood="serious"] { --rface:#b7f0ff; }
+.rbot[data-mood="bat5"] { --rface:#8fe6d6; }
+.rbot[data-mood="bat4"] { --rface:#9fe0ef; }
+.rbot[data-mood="bat3"] { --rface:#9fe0ef; }
+.rbot[data-mood="bat2"] { --rface:#7fb2c9; }
+.rbot[data-mood="bat1"] { --rface:#6f93a6; }
+.rbot .js-rface { opacity:1; }
+.rbot[data-mood="bat5"] .js-rface { opacity:1; }
+.rbot[data-mood="bat4"] .js-rface { opacity:.86; }
+.rbot[data-mood="bat3"] .js-rface { opacity:.72; }
+.rbot[data-mood="bat2"] .js-rface { opacity:.58; }
+.rbot[data-mood="bat1"] .js-rface { opacity:.44; }
+.nm { font-family:var(--disp); font-size:15px; font-weight:700; margin-top:4px; }
+.sub { color:var(--ink3); font-size:12.5px; margin-top:3px; line-height:1.5; }
+.sec { font-family:var(--disp); font-size:16px; margin:26px 0 12px; color:var(--ink2); }
+</style>
+<h1>SSACURITY 로봇 표정 아홉</h1>
+<p class="lead">관제 대시보드 시안의 이동 경로 구간 카드에서 쓰는 캐릭터입니다. 그림 파일이 아니라 SVG 라 표정 · 진행 방향 · 네온 색을 코드로 바꿉니다.<br>
+네온은 이동 중이면 빨강, 서 있으면 초록입니다. 얼굴 화면 빛은 배터리 단계가 내려갈수록 함께 죽습니다.</p>
+<div class="sec">상태 표정 — 배터리보다 앞섭니다</div>
+<div class="grid" id="g1"></div>
+<div class="sec">배터리 다섯 단계 — 20%씩</div>
+<div class="grid" id="g2"></div>
+<div class="sec">진행 방향과 네온</div>
+<div class="grid" id="g3"></div>
+<script>
+  var ROBOT_BODY =
+    '<svg class="rbotsvg" viewBox="0 0 100 100" role="img" aria-hidden="true">' +
+      /* 바퀴 — 몸통보다 먼저 그려 뒤로 깝니다 */
+      '<g>' +
+        '<circle cx="27" cy="72" r="13" fill="#1b2026"></circle>' +
+        '<circle cx="27" cy="72" r="6"  fill="#9fc4e8"></circle>' +
+        '<circle cx="71" cy="72" r="13" fill="#1b2026"></circle>' +
+        '<circle cx="71" cy="72" r="6"  fill="#9fc4e8"></circle>' +
+      '</g>' +
+      /* 몸통 */
+      '<rect x="12" y="26" width="76" height="48" rx="23" fill="#f0b3c3"></rect>' +
+      '<path d="M74 40h8a6 6 0 0 1 6 6v14a6 6 0 0 1-6 6h-8z" fill="#9fb6e0" opacity=".9"></path>' +
+      /* 안테나 */
+      '<line x1="45" y1="26" x2="41" y2="6" stroke="#2a3138" stroke-width="2.6" stroke-linecap="round"></line>' +
+      '<circle cx="40.5" cy="5" r="4.6" fill="#9fc4e8"></circle>' +
+      /* 상단 태그 리더 패널 */
+      '<g transform="rotate(-12 40 20)">' +
+        '<rect x="26" y="12" width="30" height="17" rx="4.5" fill="#9fc4e8"></rect>' +
+        '<rect x="29" y="15" width="24" height="11" rx="2.6" fill="#16202c"></rect>' +
+        '<path d="M34 20.5h3M39 18.2a3.4 3.4 0 0 1 0 4.6M42 16.8a5.6 5.6 0 0 1 0 7.4" stroke="#7fe3f2" stroke-width="1.5" fill="none" stroke-linecap="round"></path>' +
+      '</g>' +
+      /* 얼굴 화면 — 오른쪽(진행 방향)을 봅니다 */
+      '<rect x="44" y="34" width="40" height="28" rx="8" fill="#12171c" stroke="#9fc4e8" stroke-width="2.6"></rect>' +
+      '<g class="js-rface"></g>' +
+    '</svg>';
+
+  /* 표정 여덟. 눈·입 색은 CSS 변수(--rface)를 그대로 받습니다 — 화나면 빨강, 어리둥절하면
+     노랑으로 카드가 색을 바꿉니다. 배터리 다섯 단계는 08-02 사용자 지시대로
+     81~100 웃음 · 61~80 기운 내는 중 · 41~60 시무룩 · 21~40 울기 직전 · 1~20 울음입니다 */
+  var FACES = {
+    /* 충전 중 — 만족. 볼 홍조로 배터리 단계와 구분됩니다 */
+    happy:
+      '<path d="M53 47q4-6 8 0M71 47q4-6 8 0" stroke="var(--rface)" stroke-width="3" fill="none" stroke-linecap="round"></path>' +
+      '<path d="M59 53q7 6 14 0" stroke="var(--rface)" stroke-width="3" fill="none" stroke-linecap="round"></path>' +
+      '<ellipse cx="52" cy="54" rx="3.4" ry="2.2" fill="#f28ba8" opacity=".75"></ellipse>' +
+      '<ellipse cx="80" cy="54" rx="3.4" ry="2.2" fill="#f28ba8" opacity=".75"></ellipse>',
+    /* 81~100% — 웃고 있습니다 */
+    bat5:
+      '<path d="M52 47q5-7 10 0M70 47q5-7 10 0" stroke="var(--rface)" stroke-width="3" fill="none" stroke-linecap="round"></path>' +
+      '<path d="M58 52q8 8 16 0" stroke="var(--rface)" stroke-width="3" fill="none" stroke-linecap="round"></path>',
+    /* 61~80% — 힘들지만 기운을 내는 중입니다. 눈은 처졌는데 입꼬리는 올립니다 */
+    bat4:
+      '<path d="M52 45l9-3M80 45l-9-3" stroke="var(--rface)" stroke-width="2.4" fill="none" stroke-linecap="round"></path>' +
+      '<ellipse cx="57" cy="48" rx="3.4" ry="4" fill="var(--rface)"></ellipse>' +
+      '<ellipse cx="75" cy="48" rx="3.4" ry="4" fill="var(--rface)"></ellipse>' +
+      '<path d="M61 56q5 4 10 0" stroke="var(--rface)" stroke-width="2.6" fill="none" stroke-linecap="round"></path>' +
+      '<path d="M86 39q2.6 4.4 0 6.2t-2.6-6.2z" fill="#7fd6ef" opacity=".8"></path>',
+    /* 41~60% — 시무룩합니다 */
+    bat3:
+      '<path d="M52 45l9-3M80 45l-9-3" stroke="var(--rface)" stroke-width="2.6" fill="none" stroke-linecap="round"></path>' +
+      '<ellipse cx="57" cy="49" rx="3.4" ry="3.8" fill="var(--rface)"></ellipse>' +
+      '<ellipse cx="75" cy="49" rx="3.4" ry="3.8" fill="var(--rface)"></ellipse>' +
+      '<path d="M62 58q4-4 8 0" stroke="var(--rface)" stroke-width="2.6" fill="none" stroke-linecap="round"></path>',
+    /* 21~40% — 울기 직전입니다. 눈이 커지고 촉촉해지며 입이 크게 뒤집힙니다 */
+    bat2:
+      '<path d="M51 45l10-4M81 45l-10-4" stroke="var(--rface)" stroke-width="2.8" fill="none" stroke-linecap="round"></path>' +
+      '<ellipse cx="57" cy="50" rx="4.2" ry="4.8" fill="var(--rface)"></ellipse>' +
+      '<ellipse cx="75" cy="50" rx="4.2" ry="4.8" fill="var(--rface)"></ellipse>' +
+      '<circle cx="58.6" cy="48.4" r="1.5" fill="#0d1216" opacity=".55"></circle>' +
+      '<circle cx="76.6" cy="48.4" r="1.5" fill="#0d1216" opacity=".55"></circle>' +
+      '<path d="M60 59q6-6 12 0" stroke="var(--rface)" stroke-width="3" fill="none" stroke-linecap="round"></path>',
+    /* 1~20% — 울고 있습니다. 눈을 꼭 감고 눈물이 흐르며 입을 크게 벌립니다 */
+    bat1:
+      '<path d="M52 47q5 6 10 0M70 47q5 6 10 0" stroke="var(--rface)" stroke-width="3" fill="none" stroke-linecap="round"></path>' +
+      '<path d="M56 51q-1.6 4.6 0 6.4t1.8-6.4z" fill="#7fd6ef" opacity=".9"></path>' +
+      '<path d="M74 51q-1.6 5.4 0 7.4t1.8-7.4z" fill="#7fd6ef" opacity=".9"></path>' +
+      '<ellipse cx="66" cy="57" rx="5" ry="3.4" fill="var(--rface)"></ellipse>',
+    /* 태깅 판정 중 — 진지합니다. 눈을 가늘게 뜨고 스캔 선을 한 줄 답니다(08-02 사용자 지시) */
+    serious:
+      '<path d="M52 42h9M80 42h-9" stroke="var(--rface)" stroke-width="2.4" fill="none" stroke-linecap="round"></path>' +
+      '<rect x="52.6" y="46" width="9" height="4.4" rx="2.2" fill="var(--rface)"></rect>' +
+      '<rect x="70.6" y="46" width="9" height="4.4" rx="2.2" fill="var(--rface)"></rect>' +
+      '<path d="M62 57h8" stroke="var(--rface)" stroke-width="2.6" fill="none" stroke-linecap="round"></path>' +
+      '<path d="M46 52h38" stroke="var(--rface)" stroke-width="1" opacity=".35"></path>',
+    /* 무단 통과 — 화남 */
+    angry:
+      '<path d="M51 41l10 4M81 41l-10 4" stroke="var(--rface)" stroke-width="3.4" fill="none" stroke-linecap="round"></path>' +
+      '<ellipse cx="57" cy="49" rx="3.6" ry="3.2" fill="var(--rface)"></ellipse>' +
+      '<ellipse cx="75" cy="49" rx="3.6" ry="3.2" fill="var(--rface)"></ellipse>' +
+      '<path d="M60 58q6-6 12 0" stroke="var(--rface)" stroke-width="3" fill="none" stroke-linecap="round"></path>',
+    /* 오류 — 어리둥절 */
+    confused:
+      '<ellipse cx="57" cy="46" rx="4.6" ry="5.2" fill="var(--rface)"></ellipse>' +
+      '<ellipse cx="75" cy="47" rx="2.6" ry="2.8" fill="var(--rface)"></ellipse>' +
+      '<path d="M60 56q3-3 6 0t6 0" stroke="var(--rface)" stroke-width="2.6" fill="none" stroke-linecap="round"></path>' +
+      '<text x="88" y="30" font-size="15" font-weight="700" fill="var(--rface)" font-family="var(--disp)">?</text>'
+  };
+
+  /* 배터리 표정은 20%씩 다섯 단계입니다(08-02 사용자 지시) — 81~100 · 61~80 · 41~60 ·
+     21~40 · 1~20. 상태 표정(화남 · 어리둥절 · 충전 만족)이 그보다 앞섭니다 */
+var META = {
+  happy:   ["충전 중", "무선충전 대기구역에 도킹해 충전하는 중입니다. 볼 홍조가 배터리 단계 표정과 갈라 줍니다."],
+  serious: ["태깅 판정 중", "태깅기 위치에 서서 판정을 켠 상태입니다. 눈을 가늘게 뜨고 스캔 선을 한 줄 답니다."],
+  angry:   ["무단 통과 감지", "카드를 안 찍고 지나간 사람을 잡았을 때 몇 초 동안 얼굴이 빨개집니다."],
+  confused:["확인 필요", "비상 정지 중이거나 통신이 끊겼을 때입니다. 노랑에 물음표가 뜹니다."],
+  bat5:    ["배터리 81~100%", "웃고 있습니다."],
+  bat4:    ["배터리 61~80%", "힘들지만 기운을 냅니다. 눈은 처졌는데 입꼬리를 올리고 땀이 한 방울."],
+  bat3:    ["배터리 41~60%", "시무룩합니다."],
+  bat2:    ["배터리 21~40%", "울기 직전입니다. 눈이 커지고 촉촉해집니다."],
+  bat1:    ["배터리 1~20%", "울고 있습니다. 눈을 꼭 감고 눈물이 두 줄."]
+};
+function cell(mood, run, dir, title, desc) {
+  var d = document.createElement("div");
+  d.className = "cell";
+  d.innerHTML = '<div class="stage"><div class="rbot" data-mood="' + mood + '" data-run="' + run + '" data-dir="' + dir + '">' +
+    ROBOT_BODY + '</div></div><div class="nm">' + title + '</div><div class="sub">' + desc + '</div>';
+  d.querySelector(".js-rface").innerHTML = FACES[mood];
+  return d;
+}
+["happy","serious","angry","confused"].forEach(function (m) {
+  document.getElementById("g1").appendChild(cell(m, "0", "fwd", META[m][0], META[m][1]));
+});
+["bat5","bat4","bat3","bat2","bat1"].forEach(function (m) {
+  document.getElementById("g2").appendChild(cell(m, "0", "fwd", META[m][0], META[m][1]));
+});
+document.getElementById("g3").appendChild(cell("bat5", "1", "fwd", "출동 중", "오른쪽을 보고 빨간 네온이 숨쉬듯 깜박입니다."));
+document.getElementById("g3").appendChild(cell("bat4", "1", "back", "복귀 중", "왼쪽을 보고 달립니다. 그림만 뒤집고 자리 계산은 그대로입니다."));
+document.getElementById("g3").appendChild(cell("serious", "0", "fwd", "정차 중", "서 있으면 네온이 초록으로 바뀝니다."));
+</script>

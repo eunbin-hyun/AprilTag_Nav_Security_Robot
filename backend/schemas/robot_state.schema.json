@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://c207.ssafy/schemas/robot_state.schema.json",
+  "title": "RobotState",
+  "description": "젯슨이 outbound WebSocket(/ws/robot)으로 서버에 올리는 상태. 이 전선의 봉투 본문 칸은 data다 — {type, version, robot_id, timestamp, data}의 data 자리에 실린다(2026-08-01 사용자 확정, 서버가 젯슨 web_bridge 공통 envelope에 맞춘다). 대시보드(/ws/dashboard)도 2026-08-04부터 같은 data 칸을 쓴다. 예시: {\"type\": \"robot_state\", \"version\": \"1\", \"robot_id\": \"RB1-01\", \"timestamp\": \"2026-08-01T10:47:40.213Z\", \"data\": { …이 스키마… }}",
+  "type": "object",
+  "required": ["robot_id"],
+  "properties": {
+    "robot_id": { "type": "string" },
+    "status_summary": {
+      "type": "object",
+      "description": "P0 필수 상태.",
+      "properties": {
+        "battery": { "type": ["integer", "null"], "minimum": 0, "maximum": 100 },
+        "mode": { "type": ["string", "null"], "enum": ["OUTDOOR_TAGGING", "INDOOR_TAGGING", "CHARGING_STATION", "MANUAL", null] },
+        "comm_status": { "type": ["string", "null"], "enum": ["WS_OK", "POLLING_GRACE", "SERVER_DOWN", null], "description": "3단 연결 상태. 소켓 close가 아니라 하트비트 연속 미스로 판정." },
+        "position": {
+          "type": ["object", "null"],
+          "description": "평면도 SVG 좌표.",
+          "properties": { "x": { "type": "number" }, "y": { "type": "number" }, "theta": { "type": "number" } }
+        },
+        "led_status": { "type": ["string", "null"] }
+      }
+    },
+    "odom": { "type": ["object", "null"], "description": "P1 · 1Hz 다운샘플." },
+    "imu": { "type": ["object", "null"], "description": "P1 · 1Hz 다운샘플." },
+    "sensor_health": { "type": ["object", "null"] },
+    "log": { "type": ["string", "null"] },
+    "mission_status": {
+      "type": ["string", "null"],
+      "enum": ["EN_ROUTE", "ARRIVED", "WEATHER_BLOCKED", "RETURN_COMPLETE", null],
+      "description": "[초안·팀 확정 대기] 안건③으로 EN_ROUTE를 넣었다. 지금 셋만으로는 '이동 중'을 못 말해서, 로봇이 스스로 재출동해 또 도착하면 ARRIVED 다음에 또 ARRIVED가 와 도착 에지가 사라진다. 사이에 EN_ROUTE가 들어가면 두 번째 도착이 살아난다. 서버는 mission_status_en_route_enabled 플래그가 켜질 때만 이 값을 인정한다."
+    }
+  }
+}

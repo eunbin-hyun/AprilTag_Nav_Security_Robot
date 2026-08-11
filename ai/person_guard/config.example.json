@@ -1,0 +1,16 @@
+{
+  "weights": "yolov8n.pt",
+  "device": "0",
+  "imgsz": 640,
+  "stop_conf": 0.6,
+  "warn_conf": 0.35,
+  "overlap_ratio": 0.25,
+  "stop_frames": 2,
+  "release_frames": 3,
+  "zone": {
+    "x_min": 0.2,
+    "x_max": 0.8,
+    "y_min": 0.65,
+    "y_max": 1.0
+  }
+}

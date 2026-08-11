@@ -1,0 +1,65 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.venv/
+venv/
+env/
+
+# 환경·비밀
+.env
+*.env
+!*.env.example
+# ⚠ frontend/.env.production은 비밀이 아니라 **배포 빌드 설정**이다. 반드시 커밋한다 —
+#   이 파일이 빠지면 `npm run build`가 목 모드로 나가서 배포 화면이 가짜 자료를 그린다
+#   (2026-07-30 실사고). 지금 위 규칙에는 안 걸리지만, 나중에 규칙이 넓어져도 안 삼키게
+#   여기서 명시로 되살려 둔다.
+!frontend/.env.production
+
+# 젠킨스 잡 config 사본. 웹훅 secretToken 암호문이 들어 있어서 커밋하면 안 된다.
+# (참고용으로 워크트리에 두고 보는 파일이라 `git add .` 한 번에 딸려 들어가는 걸 여기서 막는다.)
+jenkins-current-config.xml
+
+# 빌드·산출물
+dist/
+build/
+node_modules/
+
+# IDE
+.idea/
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# ROS2 colcon 빌드 산출물
+hardware/jetson/ros2_ws/build/
+hardware/jetson/ros2_ws/install/
+hardware/jetson/ros2_ws/log/
+
+# ── AI 운영 도구가 만드는 비밀값 (2026-08-06) ─────────────────────────
+# jexec.py가 발급받아 저장하는 JupyterHub API 토큰. 하루짜리라도 저장소에 두면 안 된다.
+ai/ops/token.txt
+# GPU 서버 비밀번호는 코드에도 저장소에도 안 둔다 — 홈의 ~/.c207_gpu_pw나 환경변수로 준다.
+ai/ops/*.pw
+
+# 로컬 작업·에이전트 설정
+.claude/
+worklog/
+**/tmp/
+**/output/
+
+# 공개 저장소에 포함하지 않는 운영 자료
+deploy/backend.env
+exec/*.sql
+exec/*.sql.gz
+exec/*DB*계정*.md
+*.pem
+*.key
+
+# 일반 로그·검사 산출물
+coverage/
+.coverage
+*.log

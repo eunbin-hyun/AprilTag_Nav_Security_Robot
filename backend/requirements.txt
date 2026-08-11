@@ -1,0 +1,63 @@
+# 운영 런타임 의존성만. 이 파일이 운영 이미지에 들어간다(backend/Dockerfile).
+#
+# ⚠ 시험 도구(pytest·pytest-asyncio·pytest-xdist·jsonschema)는 여기 두지 않는다.
+#   운영 이미지에 pytest가 들어 있으면 `docker exec c207-backend pytest` 한 줄로 운영 DB
+#   스키마가 drop된다. 개발·시험 환경은 requirements-dev.txt를 설치한다.
+#
+# ⚠ 직접뿐 아니라 간접 의존성까지 전부 `==`로 못박는다. 상한 없는 간접 의존성 하나가
+#   새 판을 내면 같은 커밋이 어제는 뜨고 오늘은 죽는다 — 2026-08-05 젠킨스 빌드 #74가
+#   그렇게 죽었다. alembic 1.14.0의 선언이 그냥 `Mako`라 판 제한이 통째로 없었고,
+#   그날 올라온 Mako 1.4.0이 최상위 `tools` 패키지를 site-packages에 같이 심어
+#   backend/tools/를 가렸다. requirements.txt는 한 줄도 안 바뀌었는데 이미지가 바뀌었다.
+#   그때까지 판을 붙잡고 있던 것은 선언된 적 없는 도커 레이어 캐시뿐이었다.
+#
+# 판을 올릴 때는 사람이 여기서 직접 고치고, 고친 뒤 이미지를 한 번 빌드해 확인한다.
+# 목록을 새로 뜰 때는 반드시 리눅스 컨테이너 안에서 뜬다 — 윈도우 venv의 `pip freeze`
+# 에는 리눅스 전용 uvloop이 아예 없고 대신 윈도우 전용 colorama가 들어간다.
+# 그대로 옮기면 운영 이미지에서 uvloop이 조용히 빠지고 uvicorn이 기본 asyncio 루프로
+# 떨어진다(에러가 안 나서 아무도 안 알려준다). 그래서 그 둘만 환경 표시를 달아 뒀다.
+#
+#   docker run --rm -v "$PWD:/w" python:3.12-slim \
+#     sh -c "pip install -q -r /w/requirements.txt && pip freeze"
+
+# ── 직접 의존성 (우리가 골라서 import하는 것) ──
+fastapi==0.115.6
+uvicorn[standard]==0.34.0
+sqlalchemy[asyncio]==2.0.36
+asyncpg==0.30.0
+alembic==1.14.0
+# ⚠ alembic이 딸고 오는 간접 의존성인데 **일부러 여기에 못박는다.**
+#   2026-08-05에 mako가 1.3.12에서 1.4.0으로 올라가면서 최상위 `tools` 패키지를 site-packages에
+#   설치하기 시작했고, 그것이 우리 `backend/tools/`를 가로채 실서버가 내려갔다(젠킨스 #74).
+#   지금은 `backend/tools/__init__.py`가 그 충돌을 막지만, 판을 안 박으면 **빌드마다 다른 것이
+#   깔려서** 어제 되던 것이 오늘 안 되는 자리가 남는다. 올릴 때는 사람이 보고 올린다.
+Mako==1.3.12
+pydantic==2.10.4
+pydantic-settings==2.7.1
+httpx==0.28.1
+websockets==14.1
+
+# ── 간접 의존성 (위 것들이 딸고 오는 것. 우리 코드는 직접 import하지 않는다) ──
+# 오른쪽은 이것을 물어오는 자리다. 직접 의존성을 빼면 여기서 같이 빠질 후보다.
+annotated-types==0.8.0     # pydantic
+anyio==4.14.2              # httpx, starlette
+certifi==2026.7.22         # httpx → httpcore
+click==8.4.2               # uvicorn
+greenlet==3.5.4            # sqlalchemy[asyncio]
+h11==0.16.0                # uvicorn, httpx → httpcore
+httpcore==1.0.9            # httpx
+httptools==0.8.0           # uvicorn[standard]
+idna==3.18                 # anyio, httpx
+Mako==1.3.12               # alembic  ← 빌드 #74를 깨뜨린 자리
+MarkupSafe==3.0.3          # Mako
+pydantic-core==2.27.2      # pydantic
+python-dotenv==1.2.2       # pydantic-settings, uvicorn[standard]
+PyYAML==6.0.3              # uvicorn[standard]
+starlette==0.41.3          # fastapi
+typing-extensions==4.16.0  # fastapi, pydantic, sqlalchemy, alembic
+watchfiles==1.2.0          # uvicorn[standard]
+
+# 환경 따라 갈리는 둘. 운영 이미지(리눅스)에 들어가는 것은 uvloop뿐이다.
+# 표시 문구는 uvicorn 0.34.0이 `standard` extra에 적어 둔 조건 그대로다.
+uvloop==0.22.1; sys_platform != "win32" and sys_platform != "cygwin" and platform_python_implementation != "PyPy"  # uvicorn[standard]
+colorama==0.4.6; sys_platform == "win32"  # uvicorn[standard], click, pytest

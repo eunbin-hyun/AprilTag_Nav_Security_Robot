@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>페이지를 찾을 수 없습니다 · C207 SSACURITY</title>
+<!--
+  404 페이지 — 2026-08-09 사용자 요청으로 신설했습니다.
+
+  왜 필요한가. 그 전까지는 없는 주소로 들어와도 nginx 가 관제 화면(index.html)을 대신
+  내주고 있었습니다(`try_files $uri $uri/ /index.html`). 그래서 오타 주소도 200 이었고,
+  걷어 낸 `/preview/` 도 주소만은 살아 있는 것처럼 보였습니다.
+
+  ⭐ 그 폴백은 원래 화면이 주소를 바꾸는 방식(SPA 라우팅)일 때 필요한 장치인데,
+  이 관제 화면은 주소를 한 번도 안 바꿉니다 — 탭 전환이 showView() 로 DOM 만 갈아
+  끼우고 pushState·replaceState·location.hash 를 쓰는 자리가 0 건입니다(실측).
+  그래서 폴백을 걷고 이 페이지를 내주도록 바꿨습니다.
+
+  ⚠ 이 파일은 관제 화면과 달리 스크립트가 없습니다. 로그인 전에도 뜨는 자리라
+  아무 자료도 부르지 않고 아무 상태도 안 읽습니다.
+-->
+<style>
+  :root {
+    --bg: #0d1214;
+    --panel: #141c1f;
+    --line: #243034;
+    --ink: #dfe7e8;
+    --ink-dim: #8fa3a6;
+    --accent: #4fb3b9;
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Pretendard", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
+    line-height: 1.7;
+    word-break: keep-all;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+  .box {
+    width: 100%;
+    max-width: 460px;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 32px 28px;
+  }
+  .brand {
+    display: flex; align-items: center; gap: 9px;
+    font-weight: 800; font-size: 17px; letter-spacing: -0.01em;
+    margin-bottom: 22px;
+  }
+  .brand .tag {
+    font-size: 11px; font-weight: 700; color: var(--accent);
+    border: 1px solid var(--accent); border-radius: 2px;
+    padding: 1px 5px; letter-spacing: 0.04em;
+  }
+  .code {
+    font-size: 13px; font-weight: 700; color: var(--accent);
+    letter-spacing: 0.1em; margin-bottom: 6px;
+  }
+  /* 제목만 크게 벌립니다. 나머지 넷(배지 11 · 코드 13 · 본문 15 · 브랜드 17)은 관제 화면
+     헤더에서 그대로 가져온 값이라 같은 결로 읽혀야 하고, 제목이 21이었을 때는 브랜드와
+     거의 같은 크기라 "무엇을 먼저 읽어야 하나"가 안 보였습니다 */
+  h1 { font-size: 27px; font-weight: 700; margin: 0 0 10px; text-wrap: balance; }
+  p { margin: 0 0 8px; color: var(--ink-dim); font-size: 15px; }
+  .go {
+    display: inline-block; margin-top: 20px;
+    background: var(--accent); color: #07171a;
+    font-weight: 700; font-size: 15px;
+    text-decoration: none; border-radius: 3px;
+    padding: 10px 20px;
+  }
+  .go:hover { filter: brightness(1.08); }
+  .go:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+</style>
+</head>
+<body>
+  <main class="box">
+    <div class="brand"><span class="tag">C207</span> SSACURITY</div>
+    <div class="code">404</div>
+    <h1>페이지를 찾을 수 없습니다</h1>
+    <p>주소가 잘못되었거나 더 이상 쓰지 않는 페이지입니다.</p>
+    <p>관제 화면은 아래 버튼으로 이동합니다.</p>
+    <a class="go" href="/">관제 화면으로</a>
+  </main>
+</body>
+</html>

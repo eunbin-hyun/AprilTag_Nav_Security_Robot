@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>robot_navigation</name>
+  <version>0.0.0</version>
+  <description>
+    AprilTag 경로 주행. route_logic 은 ROS import 를 금지해서 ROS·UART 없이
+    단위시험하고, route_runner 가 UART 소유와 ROS 입출력을 담당한다.
+    **Nav2 는 사용하지 않는다** — 야외 + 실내용 라이다 조합에서 AMCL 측위의
+    근거가 없고, 고정 경로에 전역계획이 불필요하다.
+  </description>
+  <maintainer email="eunbin-hyun@users.noreply.github.com">eunbin-hyun</maintainer>
+  <!-- 팀 공통 라이선스 정책이 정해지면 교체 -->
+  <license>Apache-2.0</license>
+
+  <depend>rclpy</depend>
+  <depend>std_msgs</depend>
+  <depend>nav_msgs</depend>
+  <depend>sensor_msgs</depend>
+  <depend>std_srvs</depend>
+  <depend>stm32_bridge</depend>
+  <depend>robot_perception</depend>
+  <depend>python3-serial</depend>
+
+  <test_depend>ament_copyright</test_depend>
+  <test_depend>ament_flake8</test_depend>
+  <test_depend>ament_pep257</test_depend>
+  <test_depend>python3-pytest</test_depend>
+
+  <export>
+    <build_type>ament_python</build_type>
+  </export>
+</package>
