@@ -108,8 +108,8 @@ Jetson Orin Nano에서 동작하는 AprilTag 자율주행 영역을 담당했습
 ├─ frontend/                   # 빌드 없는 단일 페이지 관제 대시보드
 ├─ hardware/
 │  ├─ jetson/ros2_ws/         # AprilTag 인식, 경로 주행, UART/WebSocket 브리지
-│  └─ rpi/                    # RFID·ToF 게이트 장치
-└─ embedded/stm32-drive/       # STM32 모터·조향·센서 펌웨어
+│  ├─ rpi/                    # RFID·ToF 게이트 장치
+│  └─ stm32-drive/            # STM32 모터·조향·센서 펌웨어
 ```
 
 ## 빠른 시작
