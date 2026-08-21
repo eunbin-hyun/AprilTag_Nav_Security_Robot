@@ -14,8 +14,8 @@ SSAFY 15기 공통 프로젝트 · Team C207 · 2026.07–2026.08
     <th width="50%">카메라 AprilTag 검출</th>
   </tr>
   <tr>
-    <td width="50%"><img src="docs/assets/robot-navigation-demo.gif" alt="AprilTag를 따라 주행하는 SSACURITY 로봇" width="100%"></td>
-    <td width="50%"><img src="docs/assets/apriltag-detection-demo.gif" alt="카메라 영상에서 AprilTag를 검출하는 화면" width="100%"></td>
+    <td width="50%" align="center"><img src="docs/assets/robot-navigation-demo.gif" alt="AprilTag를 따라 주행하는 SSACURITY 로봇" width="400" height="225"></td>
+    <td width="50%" align="center"><img src="docs/assets/apriltag-detection-demo.gif" alt="카메라 영상에서 AprilTag를 검출하는 화면" width="400" height="225"></td>
   </tr>
 </table>
 
