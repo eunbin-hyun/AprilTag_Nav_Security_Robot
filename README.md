@@ -6,6 +6,8 @@ SSAFY 15기 공통 프로젝트 · Team C207 · 2026.07–2026.08
 
 `ROS 2 Humble` · `AprilTag` · `Jetson Orin Nano` · `STM32F429` · `FastAPI` · `PostgreSQL` · `WebSocket`
 
+📄 **[최종 발표자료 보기](docs/SSACURITY-final-presentation.pdf)**
+
 ## 동작 데모
 
 <table width="100%">
